@@ -10,7 +10,7 @@ import AndroidIncomingCallHeadlessTask from './AndroidIncomingCallHeadlessTask';
 AppRegistry.registerComponent(appName, () => App);
 AppRegistry.registerComponent(
   'AndroidIncomingCall',
-  () => require('./Ringer').default,
+  () => require('./AndroidCallActivity').default,
 );
 
 AppRegistry.registerHeadlessTask(

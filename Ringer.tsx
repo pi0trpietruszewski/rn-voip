@@ -1,26 +1,24 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, Image} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import images from './assets/images';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {AndroidCallStackProps} from './AndroidCallActivity';
+import InCallManager from 'react-native-incall-manager';
+import callNotifications from './CallNotifications';
 
-type Props = {
-  route: {
-    params?: {
-      callUuid: string;
-      roomName: string;
-      username: string;
-      onlyAudio: boolean;
-      roomSid: string;
+type Props = AndroidCallStackProps<'Ringer'>;
+
+const Ringer: React.FC<Props> = ({route: {params}}) => {
+  const username = params.username;
+  const callUuid = params.callUuid;
+
+  useEffect(() => {
+    InCallManager.startRingtone('_BUNDLE_');
+    return () => {
+      InCallManager.stopRingtone();
     };
-  };
-};
-
-const Ringer: React.FC<Props> = ({}: Props) => {
-  // useEffect(() => {
-  //   InCallManager.startRingtone('_BUNDLE_');
-  //   return () => {
-  //     InCallManager.stopRingtone();
-  //   };
-  // }, []);
+  }, []);
   // const {callUuid, roomName, roomSid, username, onlyAudio} =
   //   route?.params || {};
   // const matches = useSelector(matchesSelectors.getUserMatches);
@@ -28,10 +26,10 @@ const Ringer: React.FC<Props> = ({}: Props) => {
   // const match = matches.find(item => item.matchedUser.username === name);
   const answer = () => {
     // if (callUuid) {
-    //   InCallManager.stopRingtone();
+    InCallManager.stopRingtone();
     //   // TODO add flag to clear stack before navigate since we do not want to allow navigate back to the ringer view
     //   RNCallKeep.answerIncomingCall(callUuid);
-    //   callNotifications.answerCall(callUuid);
+    callNotifications.answerCall(callUuid);
     //   navigation.navigate('TwillioView', {
     //     username,
     //     roomSid,
@@ -46,43 +44,35 @@ const Ringer: React.FC<Props> = ({}: Props) => {
 
   const reject = async () => {
     // if (callUuid && roomSid) {
-    //   InCallManager.stopRingtone();
+    InCallManager.stopRingtone();
     //   try {
     //     await dependencyContainer.callsService.rejectCall(callUuid, roomSid);
-    //     callNotifications.rejectCall(callUuid);
+    callNotifications.rejectCall(callUuid);
     //     RNCallKeep.rejectCall(callUuid);
     //     callNotifications.finishIncomingCallActivity();
     //   } catch (error) {
     //     callNotifications.rejectCall(callUuid);
     //     RNCallKeep.rejectCall(callUuid);
-    //     callNotifications.finishIncomingCallActivity();
+    callNotifications.finishIncomingCallActivity();
     //   }
     // }
   };
   return (
     <View style={styles.container}>
-      {/*<FastImage*/}
-      {/*  style={styles.callContainer}*/}
-      {/*  source={{uri: match?.matchedUser?.avatarUrl}}*/}
-      {/*/>*/}
-      <Text numberOfLines={1}>
-        {/*{username}*/}
-        xxx
-      </Text>
+      <View style={styles.userDetailsContainer}>
+        <Text numberOfLines={1} style={styles.userName}>
+          {username}
+        </Text>
+        <Image style={styles.callAvatar} source={images.avatarPlaceholder} />
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.optionButton, styles.redBorder]}
           onPress={reject}>
-          {/*<Image*/}
-          {/*  source={onlyAudio ? images.call : images.video}*/}
-          {/*  style={styles.buttonIcon}*/}
-          {/*/>*/}
+          <Icon color={'red'} name={'phone-slash'} size={32} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionButton} onPress={answer}>
-          {/*<Image*/}
-          {/*  source={onlyAudio ? images.call : images.video}*/}
-          {/*  style={styles.buttonIcon}*/}
-          {/*/>*/}
+          <Icon color={'green'} name={'phone'} size={32} />
         </TouchableOpacity>
       </View>
     </View>
@@ -90,10 +80,10 @@ const Ringer: React.FC<Props> = ({}: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  container: {flex: 1, justifyContent: 'space-between', alignItems: 'center'},
   buttonContainer: {
     flexDirection: 'row',
-    marginTop: 50,
+    marginBottom: 50,
     justifyContent: 'space-around',
     width: '100%',
   },
@@ -117,13 +107,24 @@ const styles = StyleSheet.create({
   redBorder: {
     borderColor: 'red',
   },
-  callContainer: {
+  callAvatar: {
+    height: undefined,
+    width: '40%',
+    aspectRatio: 1,
+    borderRadius: 100,
+    borderColor: '#c9c9c9',
+    borderWidth: 4,
+    marginVertical: 16,
+  },
+  userName: {
+    fontWeight: 'bold',
+    fontSize: 40,
+  },
+  userDetailsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: '15%',
     flex: 1,
-    position: 'absolute',
-    bottom: 0,
-    top: 0,
-    left: 0,
-    right: 0,
   },
 });
 
