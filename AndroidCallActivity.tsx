@@ -6,6 +6,15 @@ import {
   StackNavigationProp,
 } from '@react-navigation/stack';
 import Ringer from './Ringer';
+import CallScreen from './CallScreen';
+
+type CallDataType = {
+  callUuid: string;
+  roomName: string;
+  username: string;
+  onlyAudio: boolean;
+  roomSid: string;
+};
 
 export type NavigationParamsType = CallStackParamList;
 export type AndroidCallStackProps<T extends keyof NavigationParamsType> = {
@@ -14,12 +23,10 @@ export type AndroidCallStackProps<T extends keyof NavigationParamsType> = {
 };
 
 type CallStackParamList = {
-  Ringer: {
-    callUuid: string;
-    roomName: string;
-    username: string;
-    onlyAudio: boolean;
-    roomSid: string;
+  Ringer: CallDataType;
+  Call: CallDataType & {
+    isIncoming?: boolean;
+    androidFullNotification?: boolean;
   };
 };
 const Stack = createStackNavigator<CallStackParamList>();
@@ -28,6 +35,7 @@ const AndroidCallActivity = (props: CallStackParamList['Ringer']) => {
     <NavigationContainer>
       <Stack.Navigator headerMode={'none'}>
         <Stack.Screen initialParams={props} name="Ringer" component={Ringer} />
+        <Stack.Screen name="Call" component={CallScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

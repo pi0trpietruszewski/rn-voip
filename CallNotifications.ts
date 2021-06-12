@@ -15,9 +15,7 @@ interface CallNotificationsInterface {
     roomSid: string,
     enableVideo: boolean,
   ): Promise<string>;
-  launchIncomingCallActivity(): void;
   finishIncomingCallActivity(): void;
-  launchMainActivity(): void;
 }
 
 const callNotifications = Platform.select({
@@ -29,9 +27,7 @@ const callNotifications = Platform.select({
     answerCall: () => {},
     rejectCall: () => {},
     showIncomingCallNotification: () => Promise.resolve(),
-    launchIncomingCallActivity: () => {},
     finishIncomingCallActivity: () => {},
-    launchMainActivity: () => {},
   },
 }) as CallNotificationsInterface;
 

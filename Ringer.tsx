@@ -6,56 +6,50 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {AndroidCallStackProps} from './AndroidCallActivity';
 import InCallManager from 'react-native-incall-manager';
 import callNotifications from './CallNotifications';
+import RNCallKeep from 'react-native-callkeep';
 
 type Props = AndroidCallStackProps<'Ringer'>;
 
-const Ringer: React.FC<Props> = ({route: {params}}) => {
-  const username = params.username;
-  const callUuid = params.callUuid;
-
+const Ringer: React.FC<Props> = ({route, navigation: {replace}}) => {
   useEffect(() => {
     InCallManager.startRingtone('_BUNDLE_');
     return () => {
       InCallManager.stopRingtone();
     };
   }, []);
-  // const {callUuid, roomName, roomSid, username, onlyAudio} =
-  //   route?.params || {};
-  // const matches = useSelector(matchesSelectors.getUserMatches);
-  // const name = route.params?.roomName.split(' x ')[0];
-  // const match = matches.find(item => item.matchedUser.username === name);
+  const {callUuid, roomName, roomSid, username, onlyAudio} =
+    route?.params || {};
+
   const answer = () => {
-    // if (callUuid) {
-    InCallManager.stopRingtone();
-    //   // TODO add flag to clear stack before navigate since we do not want to allow navigate back to the ringer view
-    //   RNCallKeep.answerIncomingCall(callUuid);
-    callNotifications.answerCall(callUuid);
-    //   navigation.navigate('TwillioView', {
-    //     username,
-    //     roomSid,
-    //     roomName,
-    //     onlyAudio,
-    //     callUuid,
-    //     isIncoming: true,
-    //     androidFullNotification: true,
-    //   });
-    // }
+    if (callUuid) {
+      InCallManager.stopRingtone();
+      //   // TODO add flag to clear stack before navigate since we do not want to allow navigate back to the ringer view
+      RNCallKeep.answerIncomingCall(callUuid);
+      callNotifications.answerCall(callUuid);
+      replace('Call', {
+        username,
+        roomSid,
+        roomName,
+        onlyAudio,
+        callUuid,
+        isIncoming: true,
+        androidFullNotification: true,
+      });
+    }
   };
 
   const reject = async () => {
-    // if (callUuid && roomSid) {
-    InCallManager.stopRingtone();
-    //   try {
-    //     await dependencyContainer.callsService.rejectCall(callUuid, roomSid);
-    callNotifications.rejectCall(callUuid);
-    //     RNCallKeep.rejectCall(callUuid);
-    //     callNotifications.finishIncomingCallActivity();
-    //   } catch (error) {
-    //     callNotifications.rejectCall(callUuid);
-    //     RNCallKeep.rejectCall(callUuid);
-    callNotifications.finishIncomingCallActivity();
-    //   }
-    // }
+    if (callUuid && roomSid) {
+      InCallManager.stopRingtone();
+      //@TODO Send a reject notifiaction to caller
+      callNotifications.rejectCall(callUuid);
+      RNCallKeep.rejectCall(callUuid);
+      callNotifications.finishIncomingCallActivity();
+      //   }
+    } else {
+      callNotifications.finishIncomingCallActivity();
+      RNCallKeep.rejectCall(callUuid);
+    }
   };
   return (
     <View style={styles.container}>

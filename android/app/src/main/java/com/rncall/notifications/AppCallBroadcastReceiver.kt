@@ -44,7 +44,7 @@ class AppCallBroadcastReceiver : BroadcastReceiver() {
                     if ("ANSWER" == actionPerformed) {
                         if (currentActivity !is AppCallActivity) {
                             val mediaType = if (call?.enableVideo !== null && call.enableVideo) "video" else "audio"
-                            val activeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("app://twillio/answer/${callUuid}/${call?.roomSid}/${call?.roomId}/${mediaType}/${call?.name}/").normalizeScheme())
+                            val activeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("app://call/answer/${callUuid}/${call?.roomSid}/${call?.roomId}/${mediaType}/${call?.name}/").normalizeScheme())
                             activeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(activeIntent)
                             resolveRNPromise(callUuid, actionPerformed)
@@ -52,7 +52,7 @@ class AppCallBroadcastReceiver : BroadcastReceiver() {
                     }
                     if ("REJECT" == actionPerformed) {
                         if (currentActivity !is AppCallActivity) {
-                            val activeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("app://twillio/reject/${callUuid}/${call?.roomSid}/").normalizeScheme())
+                            val activeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("app://call/reject/${callUuid}/${call?.roomSid}/").normalizeScheme())
                             activeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(activeIntent)
                             resolveRNPromise(callUuid, actionPerformed)

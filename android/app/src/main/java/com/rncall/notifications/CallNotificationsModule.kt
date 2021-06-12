@@ -63,35 +63,6 @@ class CallNotificationsModule(private val context: ReactApplicationContext) : Re
         }
     }
 
-    @ReactMethod
-    fun launchMainActivity() {
-        if (currentActivity !is MainActivity) {
-            val packageName = context.packageName
-            val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
-            val className = launchIntent!!.component!!.className
-            try {
-                val activityClass = Class.forName(className)
-                val activityIntent = Intent(context, activityClass)
-                activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(activityIntent)
-            } catch (e: Exception) {
-                Log.e(TAG, "Class not found", e)
-                return
-            }
-        }
-    }
-
-    @ReactMethod
-    fun launchIncomingCallActivity() {
-        try {
-            val activityIntent = Intent(context, AppCallActivity::class.java)
-            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(activityIntent)
-        } catch (e: Exception) {
-            Log.e(TAG, "Class not found", e)
-            return
-        }
-    }
 
     @ReactMethod
     fun finishIncomingCallActivity() {

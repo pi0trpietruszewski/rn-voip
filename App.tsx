@@ -28,7 +28,6 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import CallKeepManager from './CallKeepManager';
-import RNCallKeep from 'react-native-callkeep';
 
 const Section: React.FC<{
   title: string;
@@ -75,11 +74,11 @@ const App = () => {
         <Button
           title={'CallMe'}
           onPress={() => {
-            RNCallKeep.displayIncomingCall(
-              '8127c521-4694-4968-ad9c-058be593097e',
-              '795801759',
-              '795801759',
-            );
+            // RNCallKeep.displayIncomingCall(
+            //   '8127c521-4694-4968-ad9c-058be593097e',
+            //   '795801759',
+            //   '795801759',
+            // );
           }}
         />
         <View
